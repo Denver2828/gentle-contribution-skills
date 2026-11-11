@@ -1,0 +1,56 @@
+name: Validate and publish sanitized snapshot
+on:
+  push:
+    branches: [main]
+    paths: [sanitized.bundle, .github/workflows/publish-sanitized.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sanitized-publication
+  cancel-in-progress: false
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify bundle and select exact sanitized commit
+        shell: bash
+        run: |
+          echo "7fe03e7a22c73336f60e7ee3bdf0b6ca193b9b5ee443ba5e794666575f305a16  sanitized.bundle" | sha256sum -c -
+          git bundle verify sanitized.bundle
+          git fetch ./sanitized.bundle refs/heads/main:refs/remotes/sanitized/main
+          test "$(git rev-parse refs/remotes/sanitized/main)" = "7d90cbef5c473fd59747c46e87fce4c097724436"
+          git checkout --detach refs/remotes/sanitized/main
+      - name: Full audit engine suite
+        shell: bash
+        run: node --test .claude/tools/audit/test/*.test.mjs
+      - name: Verify distribution lineage
+        shell: bash
+        run: node .claude/tools/audit/bin/verify-portable-skill-lineage.mjs --manifest .claude/skills/gentle-ai-observation-to-ratchet/references/portable-lineage.v1.json --root .
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Publish only the verified snapshot to a new branch
+        shell: bash
+        run: |
+          echo "7fe03e7a22c73336f60e7ee3bdf0b6ca193b9b5ee443ba5e794666575f305a16  sanitized.bundle" | sha256sum -c -
+          git fetch ./sanitized.bundle refs/heads/main:refs/remotes/sanitized/main
+          test "$(git rev-parse refs/remotes/sanitized/main)" = "7d90cbef5c473fd59747c46e87fce4c097724436"
+          git push origin refs/remotes/sanitized/main:refs/heads/public-release
