@@ -1,0 +1,35 @@
+name: Verify public skills
+on:
+  push:
+    branches: [public-release]
+    paths: ['.claude/**', '.gitattributes', '.github/workflows/verify.yml']
+  pull_request:
+    paths: ['.claude/**', '.gitattributes', '.github/workflows/verify.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: ['22', '24']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      SUBJECT_GRAMMAR_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Full audit engine suite
+        shell: bash
+        run: node --test .claude/tools/audit/test/*.test.mjs
+      - name: Distribution lineage
+        shell: bash
+        run: node .claude/tools/audit/bin/verify-portable-skill-lineage.mjs --manifest .claude/skills/gentle-ai-observation-to-ratchet/references/portable-lineage.v1.json --root .
