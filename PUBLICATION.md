@@ -1,56 +1,64 @@
-# Revisión de la edición pública
+# Revision de la edicion publica
 
-Fecha: 2026-11-11. Estado: candidata; repositorio público creado, carga del paquete pendiente.
+Fecha: 2026-11-11. Estado: publicada en la rama predeterminada public-release.
+Repositorio: https://github.com/Denver2828/gentle-contribution-skills
 
-## Alcance
+## Alcance y privacidad
 
-Incluye aportes, triaje de observaciones y evaluación de observación a control,
-con sus agentes, motor y pruebas. Excluye el piloto de cola v2, los informes
-privados, memorias, transcripciones, registros operativos y el historial Git de
-origen. Los registros incluidos son plantillas vacías.
+Incluye aportes, triaje de observaciones y evaluacion de observacion a control,
+sus agentes, motor, esquemas, pruebas y la definicion auxiliar de context-doctor.
+Excluye el piloto v2, informes privados, memorias, transcripciones, registros
+operativos y el historial Git original. Los registros de uso son plantillas.
 
-Se reemplazaron las rutas de la máquina y nombres personales en ejemplos, se
-asignaron alias a los IDs de observaciones y se retiraron relatos identificables
-de incidentes en los archivos revisados. Los manifiestos de distribución tienen
-hashes recalculados: no son los identificadores de la edición privada.
+Se reemplazaron rutas y nombres personales en ejemplos, se asignaron alias a los
+IDs de observaciones y se retiraron relatos identificables de incidentes en los
+archivos revisados. Los manifiestos se recalcularon para la distribucion.
 
-## Evidencia y límites
+La revision independiente y el escaneo acotado del inventario de 214 archivos no
+identificaron secretos reales ni correos personales. Los ejemplos bajo
+example.invalid y las cadenas de secretos en pruebas son sinteticos. El nuevo
+historial utiliza correo Git noreply. Esto no demuestra ausencia absoluta de
+secretos: el escaneo de patrones y la lectura tienen un alcance limitado.
+El repositorio de origen permanece privado.
 
-- **231/231 tests focalizados pasan**, cero fallos y cero omitidos: aceptación,
-  auditor-result, cobertura, linaje portable, alcance, store, afirmaciones sobre
-  tests, trazas Codex, guard de publicación y redacción de secretos.
-- Verificador del manifiesto público: `current`, doce artefactos vigentes,
-  cero hallazgos.
-- Revisión independiente de privacidad y dependencias: no identificó secretos
-  reales ni rutas personales en las coincidencias examinadas; se corrigieron los
-  relatos de incidentes que señaló. No faltan imports relativos de módulos.
-- Los correos `example.invalid`, las rutas de ejemplo y las cadenas de secretos
-  sintéticos en los tests son deliberados. No se publican correos personales.
-- Esta revisión no demuestra ausencia absoluta de secretos. Los chequeos de
-  patrones y la lectura tienen un alcance acotado.
-- No se atribuye a esta exportación una suite global verde ni una instalación
-  real validada en todos los clientes o sistemas operativos.
-- El repositorio de origen permanece privado; no se autoriza cambiar su
-  visibilidad ni subir su historial como parte de esta publicación.
+## Evidencia verificable
 
-## Validación global pendiente
+Snapshot de codigo probado: 7d90cbef5c473fd59747c46e87fce4c097724436.
+[Validacion y publicacion](https://github.com/Denver2828/gentle-contribution-skills/actions/runs/43114681902).
 
-La primera ejecución completa dio 1062 tests: 1035 aprobados, 24 fallidos y
-3 omitidos. El control pre-commit bloqueó la publicación; no se considera verde.
-Se identificó una dependencia de empaquetado ausente (context-doctor), se agregó
-su definición y su prueba de integración específica pasó (1/1). Esa corrección
-no equivale a repetir ni aprobar toda la suite.
+Comando: node --test .claude/tools/audit/test/*.test.mjs
 
-Entre los fallos restantes observados hay operaciones de enlaces/junctions y
-clones de fixtures rechazadas por el entorno, además de un test que necesita
-HEAD en el repositorio nuevo aún sin commits. Debe repetirse la suite sobre un
-checkout con historial inicial y un entorno que permita esas operaciones antes
-de declarar validación global. No se modificaron los tests para ocultar fallos.
+| Entorno | Tests registrados | Aprobados | Fallidos | Omitidos |
+|---|---:|---:|---:|---:|
+| GitHub Actions Linux, Node 24 | 1055 | 1054 | 0 | 1 |
+| GitHub Actions Windows, Node 24 | 1055 | 1054 | 0 | 1 |
 
-## Distribución
+- Linux omitio un diagnostico de indice Git de solo lectura: el sistema permite
+  reemplazar un archivo 0444 segun los permisos del directorio.
+- Windows omitio el caso de nombre no UTF-8 porque el sistema no permite crear
+  ese nombre. El comportamiento ante dicho nombre no fue probado en Windows.
+- Ambos entornos aprobaron el verificador del manifiesto de distribucion.
+- Localmente pasaron 231 pruebas focalizadas y 20 de historial/hashes.
+- Los resultados por plataforma no representan casos distintos que deban sumarse.
 
-Crear un repositorio público independiente y vacío. Publicar exclusivamente los
-archivos de esta edición, con historial nuevo y correo Git público noreply.
-Verificar el inventario remoto antes de anunciar disponibilidad. Nunca agregar
-archivos de la carpeta de preparación, logs de validación o metadatos `.git`
-como archivos del paquete.
+La primera ejecucion local dio 1035 aprobados, 24 fallidos y 3 omitidos sobre
+1062 registros. Se corrigio la dependencia ausente y se creo un historial nuevo
+para las pruebas que requieren HEAD. Las operaciones rechazadas por el entorno
+local se comprobaron en los runners indicados, sin ocultar fallos ni cambiar las
+aserciones. El comando local de descubrimiento automatico tambien contabiliza
+modulos auxiliares; la tabla remota corresponde al patron explicito *.test.mjs.
+
+## Que demuestra y que no
+
+Las suites ejecutan casos del motor: contratos, evidencia, integridad, permisos
+de publicacion, continuidad, redaccion y operaciones Git con fixtures.
+No certifican que un modelo siga siempre las instrucciones, que todos los
+clientes integren igual los hooks, ni que toda operacion real con GitHub funcione.
+Tampoco prueban ausencia de errores, aislamiento frente a un actor malicioso,
+superioridad sobre otros sistemas ni ahorro de tokens.
+
+El historial publico se creo desde una copia seleccionada, sin importar el
+historial privado. La carga inicial uso un bundle verificado por checksum; solo
+tras las dos suites exitosas se publico su commit exacto como public-release.
+La rama main conserva ese material de arranque para trazabilidad. Los cambios
+posteriores de documentacion y CI se distinguen del snapshot probado.
