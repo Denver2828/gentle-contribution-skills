@@ -1,0 +1,15 @@
+.claude/state/
+node_modules/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+*.lock
+*.tmp-*
+.claude/settings.local.json
+workspace.local.json
+src/
+src-worktrees/

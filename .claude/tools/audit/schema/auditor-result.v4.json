@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "auditor-result.v4.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "kind",
+    "auditResultId",
+    "subject_id",
+    "taskContractDigest",
+    "candidateKind",
+    "completeness",
+    "acceptanceCoverage",
+    "acceptanceCoverageDigest",
+    "coverageRemediation",
+    "designCoverage",
+    "maintainerDecisions",
+    "verification",
+    "findings",
+    "strengths",
+    "recommendation",
+    "verdict",
+    "correctionEligible"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "auditor-result/v4"
+    },
+    "kind": {
+      "const": "no-code-aporte-audit"
+    },
+    "auditResultId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "subject_id": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "taskContractDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "candidateKind": {
+      "const": "no-code-aporte"
+    },
+    "completeness": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "incomplete"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "acceptanceCoverage": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "acceptanceId",
+          "status",
+          "evidence",
+          "verification",
+          "limit",
+          "reason",
+          "remediation"
+        ],
+        "properties": {
+          "acceptanceId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "NOT_RUN",
+              "N/A"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "verification": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "required": [
+              "method",
+              "falsifier"
+            ],
+            "properties": {
+              "method": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "falsifier": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              }
+            }
+          },
+          "limit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 2048
+          },
+          "remediation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    "acceptanceCoverageDigest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "coverageRemediation": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4096
+    },
+    "designCoverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "aspect",
+          "status",
+          "evidence",
+          "justification",
+          "material"
+        ],
+        "properties": {
+          "aspect": {
+            "enum": [
+              "design.over-engineering",
+              "design.side-effects",
+              "design.user-qol",
+              "design.shrinkability",
+              "cost.system",
+              "cost.user",
+              "cost.product"
+            ]
+          },
+          "status": {
+            "enum": [
+              "assessed",
+              "not_applicable",
+              "not_assessed"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "justification": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 2048
+          },
+          "material": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "maintainerDecisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "decision",
+          "options",
+          "evidence",
+          "causalDisposition"
+        ],
+        "properties": {
+          "decision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "options": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "causalDisposition": {
+            "enum": [
+              "introduced",
+              "pre_existing",
+              "external",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "severity",
+          "evidenceClass",
+          "causalDisposition",
+          "claim",
+          "evidence",
+          "why",
+          "smallestCorrection"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "enum": [
+              "BLOCKER",
+              "MAJOR",
+              "WARNING"
+            ]
+          },
+          "evidenceClass": {
+            "enum": [
+              "deterministic",
+              "inferential",
+              "observed"
+            ]
+          },
+          "causalDisposition": {
+            "enum": [
+              "introduced",
+              "pre_existing",
+              "external",
+              "unknown"
+            ]
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          },
+          "smallestCorrection": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "strengths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "recommendation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verdict": {
+      "enum": [
+        null,
+        "PASS",
+        "NEEDS_CHANGES",
+        "NEEDS_MAINTAINER",
+        "BLOCKED_INCOMPLETE"
+      ]
+    },
+    "correctionEligible": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/signature.v1.json",
+  "title": "Receipt signature",
+  "description": "A detached Ed25519 signature over one receiptId, produced by the human-run signer with the passphrase-encrypted private key. This is the one artifact in the store that IS a signature: it proves the passphrase holder authorized this exact receipt. It says nothing about the store around it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "signatureVersion",
+    "receiptId",
+    "signature",
+    "keyFingerprint",
+    "signedAt"
+  ],
+  "properties": {
+    "signatureVersion": {
+      "const": "1.0.0"
+    },
+    "receiptId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]+={0,2}$",
+      "minLength": 1,
+      "description": "Base64 of the detached Ed25519 signature over the receiptId string."
+    },
+    "keyFingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of the raw public key bytes. Verification also demands it equal the anchored fingerprint."
+    },
+    "signedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    }
+  }
+}

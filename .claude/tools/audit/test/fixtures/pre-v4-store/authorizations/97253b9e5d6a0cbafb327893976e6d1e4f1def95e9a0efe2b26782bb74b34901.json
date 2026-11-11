@@ -1,0 +1,31 @@
+{
+  "authorizationVersion": "1.1.0",
+  "kind": "content-addressed-receipt",
+  "notASignature": "This is a content-addressed receipt, not a cryptographic signature. It binds a decision to a candidate and detects edits to itself; it proves nothing about who issued it and resists no forgery.",
+  "gate": "preflight",
+  "evidenceId": "sha256:d9ab0fc55d16e32e34a089984dfe2436f4efdf8d3b9ae68b319fb732abc3ad46",
+  "candidateId": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "decisionId": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+  "snapshotHash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "policyHash": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+  "toolVersion": "0.1.0",
+  "publication": {
+    "operation": "issue-comment",
+    "targetRepo": "Gentleman-Programming/gentle-ai",
+    "targetNumber": 3297,
+    "bodySha256": "sha256:6cf5d1b5a005d42133370523e69a78d616b0e6587922c623c05cae55fbe25c20",
+    "titleSha256": null,
+    "dependsOn": []
+  },
+  "artifacts": [
+    {
+      "path": "audit-results/f21d1add6ca636fa126eeac5eb84d6629397dea5f8f5c6e61603adfcc49e4b05.json",
+      "sha256": "sha256:37057a4d11060e4dfc1bd8a7b61ab7a956804dcb5ca68ce46a721c8a0bf7d3c1"
+    },
+    {
+      "path": "task-contracts/d6e4e157b35b088c6773cdeba18900be2cd0d31e0a1c20fc2eb4e2860397ee0b.json",
+      "sha256": "sha256:55ad3fe4c404a24195144ba3d9ba9aa32807950c6c6774ddc3bbb32af1cf5d40"
+    }
+  ],
+  "receiptId": "sha256:97253b9e5d6a0cbafb327893976e6d1e4f1def95e9a0efe2b26782bb74b34901"
+}

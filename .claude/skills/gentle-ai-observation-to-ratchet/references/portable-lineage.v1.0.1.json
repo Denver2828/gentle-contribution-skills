@@ -1,0 +1,380 @@
+{
+  "schema_id": "gentle-ai.portable-skill-lineage/v1",
+  "skill": {
+    "id": "gentle-ai-observation-to-ratchet",
+    "version": "1.0.1",
+    "manifest_version": "1.0.1",
+    "content_id": "sha256:323a5fda8eea5bd3aedcf08a3e83b412ebdc777f1fd076aef9ac9842b0b834f7",
+    "supersedes": [
+      "sha256:8b3ac419f4c46bd245e988116e46e6ced5259e327a54f3534d3c54ec775f7dcb"
+    ]
+  },
+  "history": [
+    {
+      "source_id": "engram:900001",
+      "date": "2026-08-19",
+      "what": "Verified the capability gap.",
+      "why": "Avoid duplicating an existing authority or tracker."
+    },
+    {
+      "source_id": "engram:900002",
+      "date": "2026-08-19",
+      "what": "Selected a local prefixed read-only skill outside nested source.",
+      "why": "Keep the pilot owned by the outer project harness."
+    },
+    {
+      "source_id": "engram:900003",
+      "date": "2026-08-19",
+      "what": "Created the local observation-to-ratchet skill.",
+      "why": "Turn one human-selected observation into a bounded verified decision."
+    },
+    {
+      "source_id": "engram:900004",
+      "date": "2026-08-20",
+      "what": "The first run refuted its source observation.",
+      "why": "Established that counterfactual proof and a consumer sweep are required."
+    },
+    {
+      "source_id": "engram:900005",
+      "date": "2026-08-22",
+      "what": "Tightened verifier provenance requirements.",
+      "why": "Incomplete or non-terminal capture cannot promote authority."
+    },
+    {
+      "source_id": "engram:900006",
+      "date": "2026-08-22",
+      "what": "Stale current-main evidence correctly blocked promotion.",
+      "why": "Promotion must use refreshable current evidence."
+    },
+    {
+      "source_id": "engram:900007",
+      "date": "2026-08-22",
+      "what": "Kept observation selection human-owned and singular.",
+      "why": "Prevent automatic sweeping or promotion of memory."
+    },
+    {
+      "source_id": "engram:900008",
+      "date": "2026-08-22",
+      "what": "Chose a repository-only skill before wider distribution.",
+      "why": "Validate the contract locally before bundling or plugin publication."
+    },
+    {
+      "source_id": "engram:900009",
+      "date": "2026-08-22",
+      "what": "Narrowed the novelty claim after prior-art review.",
+      "why": "Keep the contribution boundary evidence-based."
+    },
+    {
+      "source_id": "engram:900010",
+      "date": "2026-08-27",
+      "what": "Aligned the record with the six-link v4 chain.",
+      "why": "Bind observation, evidence, decision, authority, consumer, and proof explicitly."
+    },
+    {
+      "source_id": "engram:900011",
+      "date": "2026-08-27",
+      "what": "Separated bounded triage from single-observation promotion.",
+      "why": "Do not let enumeration pre-decide promotion."
+    },
+    {
+      "source_id": "engram:900012",
+      "date": "2026-08-28",
+      "what": "Combined scope-fit decision with deterministic coherence verification.",
+      "why": "Make route and ownership contradictions mechanically visible."
+    },
+    {
+      "source_id": "engram:900013",
+      "date": "2026-08-29",
+      "what": "Adopted step-level lineage, drift, and bounded repair without Neo4j.",
+      "why": "Use a dependency-free content-addressed local pilot."
+    },
+    {
+      "source_id": "engram:900014",
+      "date": "2026-08-29",
+      "what": "Reused the existing ratchet history as provenance.",
+      "why": "Avoid starting a disconnected decision lineage."
+    },
+    {
+      "source_id": "engram:900015",
+      "date": "2026-09-03",
+      "what": "Bound every artifact digest to git blob bytes by pinning the harness tree to LF.",
+      "why": "A digest over a platform-converted working copy is not a digest over the artifact; the genesis manifest also bound SKILL.md bytes that were never committed."
+    }
+  ],
+  "bindings": [
+    {
+      "id": "skill-contract",
+      "role": "authority",
+      "path": ".claude/skills/gentle-ai-observation-to-ratchet/SKILL.md",
+      "sha256": "sha256:9f72a6eacd4d11e976222d84fc9f23e987b41b60e17c14fcd10fb42bd2cdc93c"
+    },
+    {
+      "id": "selection-contract",
+      "role": "authority",
+      "path": ".claude/skills/gentle-ai-observation-to-ratchet/references/selection-and-execution.md",
+      "sha256": "sha256:582d76b78d6f613703d81071fecefeaef7f6e90e67343a1c32ea42af4b854da6"
+    },
+    {
+      "id": "verification-contract",
+      "role": "authority",
+      "path": ".claude/skills/gentle-ai-observation-to-ratchet/references/verification-and-provenance.md",
+      "sha256": "sha256:e9ae8450c6eba3462f1714063abd040bc0e1cd9540fa35a8112e6f91745383ca"
+    },
+    {
+      "id": "triage-skill-consumer",
+      "role": "consumer",
+      "path": ".claude/skills/gentle-ai-observation-triage/SKILL.md",
+      "sha256": "sha256:9c4ace34a84c11b9f101988a7315786a3c508968f3e35d5385f1067bf343b062"
+    },
+    {
+      "id": "triage-handoff-consumer",
+      "role": "consumer",
+      "path": ".claude/skills/gentle-ai-observation-triage/references/enumeration-and-output.md",
+      "sha256": "sha256:7b9c6a0c168865472e04528ac0da97854d3408d81000b285e10704a8ed2d27af"
+    },
+    {
+      "id": "scope-fit-verifier",
+      "role": "proof",
+      "path": ".claude/tools/audit/bin/verify-scope-fit.mjs",
+      "sha256": "sha256:5cb62dccc4365fe44ff2b9627ab7eedca21a230cdfb98e41e8d74aab687ed09f"
+    },
+    {
+      "id": "scope-fit-tests",
+      "role": "proof",
+      "path": ".claude/tools/audit/test/scope-fit.test.mjs",
+      "sha256": "sha256:ed9ae56d081e9b0a75427b8fea84bec45ae2a0a61643b828869ef4c6725cf828"
+    },
+    {
+      "id": "test-claim-verifier",
+      "role": "proof",
+      "path": ".claude/tools/audit/bin/verify-test-claim.mjs",
+      "sha256": "sha256:3db43edec2d5e8e68e126771f2bc835513c0e7cbc7a0c48f714d8da816ed23fd"
+    },
+    {
+      "id": "test-claim-tests",
+      "role": "proof",
+      "path": ".claude/tools/audit/test/verify-test-claim.test.mjs",
+      "sha256": "sha256:1fc3be2679a0819ae51cda8af0752ac9d1e635720d5e0771c7c24fc908cfca3f"
+    },
+    {
+      "id": "lineage-verifier-cli",
+      "role": "proof",
+      "path": ".claude/tools/audit/bin/verify-portable-skill-lineage.mjs",
+      "sha256": "sha256:f871ef53f1edfcdc6cb5598a1683cb33b2b1055ff2e03af2db74be7c34f3af1c"
+    },
+    {
+      "id": "lineage-verifier-core",
+      "role": "proof",
+      "path": ".claude/tools/audit/lib/portable-skill-lineage.mjs",
+      "sha256": "sha256:6d79102ea2ebe3f83aa5ae7031d3befca1e34206edf9e4d99cf53f56089c0226"
+    },
+    {
+      "id": "lineage-verifier-tests",
+      "role": "proof",
+      "path": ".claude/tools/audit/test/portable-skill-lineage.test.mjs",
+      "sha256": "sha256:f8269c19b1306ca22ad63962e640294f7d7269ad6c750814fae14e81638ad416"
+    }
+  ],
+  "steps": [
+    {
+      "id": "01-select-observation",
+      "kind": "observation",
+      "depends_on": [],
+      "input_contract": [
+        "One explicit human-selected Engram observation ID and its full lifecycle state."
+      ],
+      "output_contract": [
+        "A bounded selection record with privacy, scope, validity, and contradiction handling."
+      ],
+      "completion_contract": [
+        "Exactly one observation is selected by a human; no memory sweep or authority mutation occurred."
+      ],
+      "provenance_source_ids": [
+        "engram:900001",
+        "engram:900007",
+        "engram:900011"
+      ],
+      "artifact_bindings": []
+    },
+    {
+      "id": "02-refresh-evidence",
+      "kind": "evidence",
+      "depends_on": [
+        "01-select-observation"
+      ],
+      "input_contract": [
+        "The selected observation and its claimed failure class."
+      ],
+      "output_contract": [
+        "Current remote-derived evidence, capture provenance, budget, terminal states, and unresolved gaps."
+      ],
+      "completion_contract": [
+        "Evidence is current, complete, terminal, and refreshable; otherwise promotion is blocked."
+      ],
+      "provenance_source_ids": [
+        "engram:900004",
+        "engram:900005",
+        "engram:900006"
+      ],
+      "artifact_bindings": []
+    },
+    {
+      "id": "03-decide-scope-fit",
+      "kind": "decision",
+      "depends_on": [
+        "02-refresh-evidence"
+      ],
+      "input_contract": [
+        "Current evidence plus authority, owner, intervention point, and route candidates."
+      ],
+      "output_contract": [
+        "Exactly one coherent scope_fit_decision and one disposition."
+      ],
+      "completion_contract": [
+        "The deterministic scope-fit verifier accepts the block or returns a blocking continuation."
+      ],
+      "provenance_source_ids": [
+        "engram:900009",
+        "engram:900010",
+        "engram:900011",
+        "engram:900012"
+      ],
+      "artifact_bindings": []
+    },
+    {
+      "id": "04-bind-authority",
+      "kind": "authority",
+      "depends_on": [
+        "03-decide-scope-fit"
+      ],
+      "input_contract": [
+        "An accepted decision and the current local normative skill contracts."
+      ],
+      "output_contract": [
+        "Content identities for the skill and both normative runtime references."
+      ],
+      "completion_contract": [
+        "Every authority artifact matches its bound digest and remains unchanged by this read-only skill.",
+        "Every bound digest is SHA-256 over the artifact's git blob bytes; .gitattributes pins .claude/** to LF so a working copy on any platform reproduces them, and a digest minted over uncommitted bytes is a defect, never a binding."
+      ],
+      "provenance_source_ids": [
+        "engram:900002",
+        "engram:900003",
+        "engram:900008",
+        "engram:900013",
+        "engram:900015"
+      ],
+      "artifact_bindings": [
+        "skill-contract",
+        "selection-contract",
+        "verification-contract"
+      ]
+    },
+    {
+      "id": "05-bind-consumer",
+      "kind": "consumer",
+      "depends_on": [
+        "04-bind-authority"
+      ],
+      "input_contract": [
+        "The accepted authority route and the current triage handoff contracts."
+      ],
+      "output_contract": [
+        "Content identities for the mandatory selection and handoff consumers."
+      ],
+      "completion_contract": [
+        "Consumers still require one human-selected observation and do not pre-decide promotion."
+      ],
+      "provenance_source_ids": [
+        "engram:900004",
+        "engram:900007",
+        "engram:900011"
+      ],
+      "artifact_bindings": [
+        "triage-skill-consumer",
+        "triage-handoff-consumer"
+      ]
+    },
+    {
+      "id": "06-bind-proof",
+      "kind": "proof",
+      "depends_on": [
+        "05-bind-consumer"
+      ],
+      "input_contract": [
+        "The bound authority and consumers plus current deterministic verifier artifacts."
+      ],
+      "output_contract": [
+        "Content identities for scope-fit, capture, and lineage verification with focused tests."
+      ],
+      "completion_contract": [
+        "Current proof artifacts match their digests and counterfactual or modality proof is established; otherwise review or blocking is explicit."
+      ],
+      "provenance_source_ids": [
+        "engram:900004",
+        "engram:900005",
+        "engram:900006",
+        "engram:900010",
+        "engram:900012",
+        "engram:900014"
+      ],
+      "artifact_bindings": [
+        "scope-fit-verifier",
+        "scope-fit-tests",
+        "test-claim-verifier",
+        "test-claim-tests",
+        "lineage-verifier-cli",
+        "lineage-verifier-core",
+        "lineage-verifier-tests"
+      ]
+    }
+  ],
+  "repair_contract": {
+    "mode": "bounded_step_repair",
+    "max_steps_per_version": 1,
+    "stable_step_identity_required": true,
+    "auto_repair": false,
+    "human_review_required": true,
+    "supersedes_required": true,
+    "recheck": [
+      "affected_consumers",
+      "affected_proofs"
+    ],
+    "version_rule": "A reviewed repair issues a new manifest_version and content_id whose skill.supersedes names the prior content_id."
+  },
+  "privacy_contract": {
+    "engram_role": "memory_and_source_not_authority",
+    "allowed_history_fields": [
+      "source_id",
+      "date",
+      "what",
+      "why"
+    ],
+    "excluded": [
+      "raw_prompts",
+      "reasoning_traces",
+      "private_content",
+      "usernames",
+      "absolute_personal_paths"
+    ]
+  },
+  "revision": {
+    "kind": "repair",
+    "prior_manifest": {
+      "path": ".claude/skills/gentle-ai-observation-to-ratchet/references/portable-lineage.v1.0.0.json",
+      "sha256": "sha256:dd7c533d02b613cf083e522fa22bdc1687b9adbb69a695a11c44181f4860fdc6"
+    },
+    "changed_step_id": "04-bind-authority",
+    "revalidated_binding_ids": [
+      "triage-skill-consumer",
+      "triage-handoff-consumer",
+      "scope-fit-verifier",
+      "scope-fit-tests",
+      "test-claim-verifier",
+      "test-claim-tests",
+      "lineage-verifier-cli",
+      "lineage-verifier-core",
+      "lineage-verifier-tests"
+    ]
+  }
+}

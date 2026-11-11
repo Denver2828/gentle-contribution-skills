@@ -1,0 +1,4 @@
+#!/bin/sh
+# Workspace commit-message policy gate. The checker validates the message file
+# Git passes as $1 and leaves the index and worktree untouched.
+exec node "$(dirname "$0")/commit-msg-check.mjs" "$1"

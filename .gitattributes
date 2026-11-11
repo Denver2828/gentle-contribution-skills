@@ -1,0 +1,2 @@
+# Pin the harness tree to LF so content digests bound in manifests equal the git blob bytes on every platform.
+.claude/** text=auto eol=lf

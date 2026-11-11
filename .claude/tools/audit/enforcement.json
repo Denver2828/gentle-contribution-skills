@@ -1,0 +1,26 @@
+{
+  "enforcementVersion": "1.0.0",
+  "stage": 2,
+  "killSwitch": "Set \"stage\" to 1 and save. That is the whole revert: the preflight goes back to informative and the skill stops requiring it. No code changes, no reinstall, no argument. Rollback from stage 3 goes to 2, never to 1: a publisher problem revokes the publisher requirement, not the preflight one.",
+  "requireSignedReceipts": false,
+  "requireSignedReceiptsKillSwitch": "Set \"requireSignedReceipts\" to false and save. The verification code stays; gate-publish, reserve-attempt and the publisher simply stop demanding a verified signature. Rollback of the signing requirement never touches the stage.",
+  "stages": {
+    "1": {
+      "name": "informative",
+      "means": "The preflight may be run and read. It blocks nothing."
+    },
+    "2": {
+      "name": "preflight required",
+      "means": "A PASS preflight is required before record-evidence. FAIL, UNKNOWN, or a required NOT_RUN stops the flow. Nothing is synchronised, rebased or modified to make it pass.",
+      "enabledOn": "2026-08-01",
+      "burnInLog": "docs/burn-in-stage-2.md"
+    },
+    "3": {
+      "name": "persistence and gate-publish required",
+      "means": "Not enabled. Recording evidence, authorising and gate-publish become mandatory before any publication. The controlled publisher at .claude/tools/audit/bin/publish.mjs is the one sanctioned path for that publication: it consumes the lineage's one-shot ticket, runs the exact operation the ticket names, verifies the published bytes, and records the attempt.",
+      "enabledOn": null,
+      "burnInLog": "docs/burn-in-stage-3.md"
+    }
+  },
+  "honestScope": "This is procedural enforcement. The skill instructs an agent to check the gate; nothing here can stop a process that decides not to. It resists mistakes and convenient shortcuts, not a determined actor. The security boundary section of SKILL.md says the same thing and means it."
+}

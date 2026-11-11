@@ -1,0 +1,180 @@
+{
+  "policyVersion": "1.0.0",
+  "id": "gentle-ai",
+  "version": "1",
+  "description": "Governs our contributions to Gentleman-Programming/gentle-ai. Mirrors the invariants that repository's own PR validation enforces after publication, so they are observed before it instead. Every rule here cites where it is written in the audited repository; nothing is inferred from observed practice.",
+  "repository": {
+    "remote": "origin",
+    "expected": {
+      "host": "github.com",
+      "owner": "Gentleman-Programming",
+      "name": "gentle-ai"
+    }
+  },
+  "gates": {
+    "preflight": {
+      "description": "Run before staging a candidate for publication.",
+      "checks": [
+        {
+          "id": "git.repository-readable",
+          "required": true
+        },
+        {
+          "id": "git.no-operation-in-progress",
+          "required": true
+        },
+        {
+          "id": "git.no-conflicts",
+          "required": true
+        },
+        {
+          "id": "git.branch-allowed",
+          "required": true,
+          "with": {
+            "pattern": "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)\\/[a-z0-9._-]+$",
+            "source": "CONTRIBUTING.md#L294",
+            "authority": "repository"
+          }
+        },
+        {
+          "id": "git.upstream-configured",
+          "required": true
+        },
+        {
+          "id": "git.not-behind-upstream",
+          "required": true,
+          "with": {
+            "maxBehind": 0
+          }
+        },
+        {
+          "id": "diff.within-review-budget",
+          "required": true,
+          "with": {
+            "limit": 400
+          }
+        },
+        {
+          "id": "git.worktree-clean",
+          "required": true,
+          "with": {
+            "allowStaged": true,
+            "allowUntracked": false
+          }
+        },
+        {
+          "id": "files.required-present",
+          "required": true,
+          "with": {
+            "paths": [
+              "CONTRIBUTING.md",
+              ".github/workflows/pr-check.yml"
+            ]
+          }
+        },
+        {
+          "id": "tooling.commands-declared",
+          "required": true
+        },
+        {
+          "id": "tooling.manifests-covered",
+          "required": true,
+          "with": {
+            "exempt": [
+              "package.json",
+              "bench/go.mod"
+            ]
+          }
+        },
+        {
+          "id": "parity.declaration-source",
+          "required": true
+        },
+        {
+          "id": "parity.go-module-lockfile",
+          "required": true
+        }
+      ]
+    },
+    "preflight-issue": {
+      "description": "Run before staging an issue-only candidate: a contribution that reports something and changes no file. Not a weaker preflight -- a differently scoped one. Five checks of the publication gate measure a branch and a diff, and an issue has neither, so they are not selected here and are recorded as NOT_RUN with that motive: git.branch-allowed, git.upstream-configured and git.not-behind-upstream (no branch), diff.within-review-budget (structurally unanswerable for a candidate that changes nothing), and git.worktree-clean (an issue publishes nothing from the tree). What remains is every check that still has a subject, and parity.declaration-source stays required on purpose: a finding is worth exactly what its citations are worth.",
+      "checks": [
+        {
+          "id": "git.repository-readable",
+          "required": true
+        },
+        {
+          "id": "git.no-operation-in-progress",
+          "required": true
+        },
+        {
+          "id": "git.no-conflicts",
+          "required": true
+        },
+        {
+          "id": "files.required-present",
+          "required": true,
+          "with": {
+            "paths": [
+              "CONTRIBUTING.md",
+              ".github/workflows/pr-check.yml"
+            ]
+          }
+        },
+        {
+          "id": "tooling.commands-declared",
+          "required": true
+        },
+        {
+          "id": "tooling.manifests-covered",
+          "required": true,
+          "with": {
+            "exempt": [
+              "package.json",
+              "bench/go.mod"
+            ]
+          }
+        },
+        {
+          "id": "parity.declaration-source",
+          "required": true
+        },
+        {
+          "id": "parity.go-module-lockfile",
+          "required": true
+        }
+      ]
+    }
+  },
+  "tooling": {
+    "commands": [
+      {
+        "id": "test",
+        "run": "go test ./...",
+        "source": ".github/workflows/ci.yml#L88",
+        "appliesTo": [
+          "go.mod"
+        ],
+        "format": "yaml-run"
+      },
+      {
+        "id": "format",
+        "run": "go run ./internal/gofmtcheck",
+        "source": ".github/workflows/ci.yml#L64",
+        "appliesTo": [
+          "go.mod"
+        ],
+        "format": "yaml-run"
+      },
+      {
+        "id": "build",
+        "run": "go build -trimpath -ldflags=\"-s -w -X main.version=ci\" -o \"$env:RUNNER_TEMP\\gentle-ai.exe\" ./cmd/gentle-ai",
+        "source": ".github/workflows/ci.yml#L266",
+        "appliesTo": [
+          "go.mod"
+        ],
+        "format": "yaml-run"
+      }
+    ]
+  }
+}

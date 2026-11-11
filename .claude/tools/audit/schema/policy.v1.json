@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/policy.v1.json",
+  "title": "Audit policy",
+  "description": "Declares which checks apply to which gate, which of them block, and where this project's commands come from. Declarative on purpose: the engine holds no project-specific assumption.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policyVersion",
+    "id",
+    "version",
+    "repository",
+    "gates"
+  ],
+  "properties": {
+    "policyVersion": {
+      "const": "1.0.0",
+      "description": "Contract version of this document. A different value is an incompatible policy and blocks; it is never read on a best-effort basis."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "repository": {
+      "$ref": "#/$defs/repository"
+    },
+    "gates": {
+      "type": "object",
+      "description": "One entry per gate name. A gate absent from here cannot be run.",
+      "additionalProperties": {
+        "$ref": "#/$defs/gate"
+      }
+    },
+    "tooling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commands"
+      ],
+      "description": "Declared project commands. Never inferred: every entry names the file it was read from, and the engine verifies that file exists rather than guessing what the project runs.",
+      "properties": {
+        "commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/command"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "remote",
+        "expected"
+      ],
+      "description": "The one repository this policy may run against. Required, because a policy that cites another repository's files and line numbers produces confident rows about a repository nobody audited when it is run anywhere else.",
+      "properties": {
+        "remote": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the Git remote the identity is read from. The identity comes from that remote's url and from nothing else; the directory name is never consulted."
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "host",
+            "owner",
+            "name"
+          ],
+          "description": "The repository this policy was written for. Compared case-insensitively against the parsed remote url.",
+          "properties": {
+            "host": {
+              "type": "string",
+              "minLength": 1
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checks"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selection"
+          }
+        },
+        "checkTimeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Wall-clock budget for ONE check. Each check runs in its own terminable worker and gets this budget in full; a larger catalogue never eats into it."
+        },
+        "discoveryTimeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Wall-clock budget for building the WHOLE catalogue. Loading N modules is one bounded operation, budgeted separately from the checks it produces."
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "required"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(\\.[a-z0-9]+(-[a-z0-9]+)*)+$"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Required checks decide the gate verdict. Optional ones are recorded and never block."
+        },
+        "with": {
+          "type": "object",
+          "description": "Parameters for this check. Validated against the check's declared parameter contract; an unknown key blocks."
+        },
+        "skip": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Do not execute this check, and record NOT_RUN with this exact reason. A skipped check that is still required blocks, which is what keeps a skip from being a silent waiver."
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "run",
+        "source",
+        "format",
+        "appliesTo"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "test",
+            "build",
+            "lint",
+            "typecheck",
+            "format"
+          ]
+        },
+        "run": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The command line as declared. This delivery does not execute it."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "yaml-run",
+            "literal"
+          ],
+          "description": "How the cited region holds the command. Stated, never inferred from the file extension: 'yaml-run' reads the region's run: field, 'literal' compares the whole region. Comparison is exact in both cases."
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repository-relative path this command was read from, optionally with a #Lnn suffix. The engine verifies the path is tracked; it never derives a command from a manifest."
+        },
+        "appliesTo": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Repository-relative manifest paths this command covers."
+        }
+      }
+    }
+  }
+}

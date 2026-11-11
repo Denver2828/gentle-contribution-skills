@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/ticket.v1.json",
+  "title": "Publication ticket",
+  "description": "One reserved attempt bound to one exact publication: the operation, the target, and the hash of the exact bytes. Issued by reserve-attempt, consumed once by the controlled publisher, dead after 30 minutes. A record, not a credential: anyone able to write the file can write a consistent one.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ticketVersion",
+    "ticketId",
+    "lineage",
+    "candidateId",
+    "receiptId",
+    "evidenceId",
+    "attemptNumber",
+    "operation",
+    "targetRepo",
+    "targetNumber",
+    "bodySha256",
+    "titleSha256",
+    "dependsOn",
+    "sessionId",
+    "issuedAt",
+    "expiresAt"
+  ],
+  "properties": {
+    "ticketVersion": {
+      "const": "1.0.0"
+    },
+    "ticketId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "lineage": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "candidateId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "receiptId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "attemptNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "issue-create",
+        "issue-comment"
+      ],
+      "description": "The two supported operations, copied from the receipt. pr-create is retired: its result cannot be fully bound under the current contract, so a pre-retirement pr-create ticket fails validation and the publisher names the reason."
+    },
+    "targetRepo": {
+      "type": "string",
+      "pattern": "^[^/\\s]+/[^/\\s]+$"
+    },
+    "targetNumber": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "The issue or pull request being commented on. Null for the operations that create one, whose number does not exist yet."
+    },
+    "bodySha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Digest of the normalized body: BOM stripped, line endings folded to LF, trailing newlines dropped. The publisher recomputes it before consuming and again over the body fetched back after publishing."
+    },
+    "titleSha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Copied from the receipt's binding: non-null for issue-create, null for issue-comment. The publisher verifies the title file against it before consuming."
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+      },
+      "description": "Copied from the receipt's binding and bound in the ticket id: the lineages that must have published before this ticket may be spent. The publisher re-checks every one before consuming, without re-reading the receipt."
+    },
+    "sessionId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Recorded, never enforced: it says which session reserved, and proves nothing about which one publishes."
+    },
+    "issuedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "expiresAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    }
+  }
+}

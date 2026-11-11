@@ -1,0 +1,39 @@
+gentle-ai-aporte
+Copyright 2026 Denver2828
+
+Licensed under the Apache License, Version 2.0 (see LICENSE in this
+directory). This notice covers the skill in this directory and its two role
+definitions, .claude/agents/gentle-ai-author.md and
+.claude/agents/gentle-ai-auditor.md.
+
+------------------------------------------------------------------------
+
+This work includes material adapted from:
+
+  pr-review-discipline, version 1.6
+  by decode2
+  https://github.com/decode2/pr-review-discipline
+  Licensed under the Apache License, Version 2.0
+
+Adapted portions, taken from its references/five-fold-evaluation.md:
+
+  - The four design questions of the auditor (over-engineering,
+    side-effects, user QoL, shrinkability), in
+    .claude/agents/gentle-ai-auditor.md, step 5.
+  - The three cost axes (system, user, product) and the package of reasons
+    for and against that the human decides with, in SKILL.md, step 10.
+
+Changes made to the adapted material:
+
+  - Reworded from the review of a pull request to the audit of a frozen
+    contribution candidate, which may be an issue or a comment and not only
+    a diff.
+  - The first of its five questions (problem-solution fit) was not taken;
+    this skill covers that ground with task-contract acceptance coverage.
+  - The questions are recorded as structured `designCoverage` rows and
+    `maintainerDecisions` in the auditor result, instead of prose, and the
+    package is assembled by a controller from those rows rather than written
+    by the reviewer.
+  - English only; the original is bilingual (English and Spanish).
+
+Everything else in this work is original to it.

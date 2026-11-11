@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "permissions": {
+    "ask": [
+      "Bash(gh issue create *)",
+      "Bash(gh issue comment *)",
+      "Bash(gh issue edit *)",
+      "Bash(gh issue close *)",
+      "Bash(gh issue reopen *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr edit *)",
+      "Bash(gh pr close *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh pr review *)",
+      "Bash(gh release create *)",
+      "Bash(git push *)",
+      "Bash(gh api --method POST *)",
+      "Bash(gh api --method PATCH *)",
+      "Bash(gh api --method PUT *)",
+      "Bash(gh api --method DELETE *)",
+      "Bash(gh api -X POST *)",
+      "Bash(gh api -X PATCH *)",
+      "Bash(gh api -X PUT *)",
+      "Bash(gh api -X DELETE *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/tools/audit/bin/publish-guard.mjs",
+            "timeout": 10,
+            "statusMessage": "literal publication-pattern guard"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/tools/audit/bin/sut-boundary-guard.mjs",
+            "timeout": 10,
+            "statusMessage": "read-only nested SUT boundary guard"
+          }
+        ]
+      }
+    ]
+  }
+}

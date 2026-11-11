@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "task-contract/v1",
+  "goal": "Publish the reviewed contribution without changing its declared scope.",
+  "constraints": [
+    "Preserve the frozen candidate and publication binding."
+  ],
+  "done_when": [
+    {
+      "id": "acceptance-1",
+      "condition": "The candidate matches the declared contribution scope."
+    },
+    {
+      "id": "acceptance-2",
+      "condition": "The supporting evidence verifies every material public claim."
+    }
+  ],
+  "escalate_when": [
+    "A required decision or decisive verification is unavailable."
+  ],
+  "taskContractDigest": "sha256:d6e4e157b35b088c6773cdeba18900be2cd0d31e0a1c20fc2eb4e2860397ee0b"
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/task-contract.v1.json",
+  "title": "Frozen contribution task contract",
+  "description": "The authored goal, constraints, acceptance conditions, and escalation conditions bound into a contribution candidate identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "goal", "constraints", "done_when", "escalate_when"],
+  "properties": {
+    "schemaVersion": { "const": "task-contract/v1" },
+    "taskContractDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Native content identity. Omitted by the author and added by admission."
+    },
+    "goal": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1, "maxLength": 2048 }
+    },
+    "done_when": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "condition"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$" },
+          "condition": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        }
+      }
+    },
+    "escalate_when": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1, "maxLength": 2048 }
+    }
+  }
+}

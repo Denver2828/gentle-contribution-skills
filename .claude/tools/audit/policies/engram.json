@@ -1,0 +1,171 @@
+{
+  "policyVersion": "1.0.0",
+  "id": "engram",
+  "version": "1",
+  "description": "Governs our contributions to Gentleman-Programming/engram. Same gate shape as the gentle-ai policy: every rule cites where it is written in the audited repository; nothing is inferred from observed practice. Engram's CONTRIBUTING.md states no branch-name convention (its step 1 at CONTRIBUTING.md#L33 only says to create a branch from main), so the branch pattern below is declared as our own policy, not repository authority. The two plugin package.json manifests are exempt: plugin/pi is tested by `npm test` at ci.yml#L134 under a working-directory the command schema cannot express, and plugin/obsidian has no CI command in ci.yml.",
+  "repository": {
+    "remote": "origin",
+    "expected": {
+      "host": "github.com",
+      "owner": "Gentleman-Programming",
+      "name": "engram"
+    }
+  },
+  "gates": {
+    "preflight": {
+      "description": "Run before staging a candidate for publication.",
+      "checks": [
+        {
+          "id": "git.repository-readable",
+          "required": true
+        },
+        {
+          "id": "git.no-operation-in-progress",
+          "required": true
+        },
+        {
+          "id": "git.no-conflicts",
+          "required": true
+        },
+        {
+          "id": "git.branch-allowed",
+          "required": true,
+          "with": {
+            "pattern": "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)\\/[a-z0-9._-]+$",
+            "source": ".claude/tools/audit/policies/engram.json",
+            "authority": "ours"
+          }
+        },
+        {
+          "id": "git.upstream-configured",
+          "required": true
+        },
+        {
+          "id": "git.not-behind-upstream",
+          "required": true,
+          "with": {
+            "maxBehind": 0
+          }
+        },
+        {
+          "id": "diff.within-review-budget",
+          "required": true,
+          "with": {
+            "limit": 400
+          }
+        },
+        {
+          "id": "git.worktree-clean",
+          "required": true,
+          "with": {
+            "allowStaged": true,
+            "allowUntracked": false
+          }
+        },
+        {
+          "id": "files.required-present",
+          "required": true,
+          "with": {
+            "paths": [
+              "CONTRIBUTING.md",
+              ".github/workflows/pr-check.yml"
+            ]
+          }
+        },
+        {
+          "id": "tooling.commands-declared",
+          "required": true
+        },
+        {
+          "id": "tooling.manifests-covered",
+          "required": true,
+          "with": {
+            "exempt": [
+              "plugin/obsidian/package.json",
+              "plugin/pi/package.json"
+            ]
+          }
+        },
+        {
+          "id": "parity.declaration-source",
+          "required": true
+        },
+        {
+          "id": "parity.go-module-lockfile",
+          "required": true
+        }
+      ]
+    },
+    "preflight-issue": {
+      "description": "Run before staging an issue-only candidate: a contribution that reports something and changes no file. The five checks that measure a branch or a diff are not selected and are recorded as NOT_RUN with that motive: git.branch-allowed, git.upstream-configured and git.not-behind-upstream (no branch), diff.within-review-budget (structurally unanswerable for a candidate that changes nothing), and git.worktree-clean (an issue publishes nothing from the tree).",
+      "checks": [
+        {
+          "id": "git.repository-readable",
+          "required": true
+        },
+        {
+          "id": "git.no-operation-in-progress",
+          "required": true
+        },
+        {
+          "id": "git.no-conflicts",
+          "required": true
+        },
+        {
+          "id": "files.required-present",
+          "required": true,
+          "with": {
+            "paths": [
+              "CONTRIBUTING.md",
+              ".github/workflows/pr-check.yml"
+            ]
+          }
+        },
+        {
+          "id": "tooling.commands-declared",
+          "required": true
+        },
+        {
+          "id": "tooling.manifests-covered",
+          "required": true,
+          "with": {
+            "exempt": [
+              "plugin/obsidian/package.json",
+              "plugin/pi/package.json"
+            ]
+          }
+        },
+        {
+          "id": "parity.declaration-source",
+          "required": true
+        },
+        {
+          "id": "parity.go-module-lockfile",
+          "required": true
+        }
+      ]
+    }
+  },
+  "tooling": {
+    "commands": [
+      {
+        "id": "test",
+        "run": "go test ./...",
+        "source": ".github/workflows/ci.yml#L64",
+        "appliesTo": [
+          "go.mod"
+        ],
+        "format": "yaml-run"
+      },
+      {
+        "id": "build",
+        "run": "go build -o engram-selftest ./cmd/engram && ./engram-selftest test --quick",
+        "source": ".github/workflows/ci.yml#L67",
+        "appliesTo": [
+          "go.mod"
+        ],
+        "format": "yaml-run"
+      }
+    ]
+  }
+}

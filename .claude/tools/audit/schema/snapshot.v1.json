@@ -1,0 +1,582 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/snapshot.v1.json",
+  "title": "Repository snapshot",
+  "description": "One reproducible reading of repository state. States facts only; it never judges them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "snapshotVersion",
+    "root",
+    "reader",
+    "identity",
+    "config",
+    "layout",
+    "worktree",
+    "changes",
+    "diffstat",
+    "inventory",
+    "counts",
+    "hash"
+  ],
+  "properties": {
+    "snapshotVersion": {
+      "const": "1.0.0"
+    },
+    "root": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Absolute path of the checkout. Recorded, but excluded from the hash: the same state in two directories is the same state."
+    },
+    "reader": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gitVersion"
+      ],
+      "description": "Properties of the reader, not of the repository. Excluded from the hash.",
+      "properties": {
+        "gitVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "headKind",
+        "branch",
+        "detached",
+        "upstream",
+        "mergeBase",
+        "ahead",
+        "behind",
+        "operation"
+      ],
+      "properties": {
+        "head": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "HEAD commit oid, null when HEAD is unborn."
+        },
+        "headKind": {
+          "type": "string",
+          "enum": [
+            "commit",
+            "unborn"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Branch name, null when HEAD is detached."
+        },
+        "detached": {
+          "type": "boolean"
+        },
+        "upstream": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ahead": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Null when there is no upstream to compare against."
+        },
+        "behind": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "none",
+            "merge",
+            "rebase",
+            "cherry-pick",
+            "revert",
+            "bisect"
+          ]
+        },
+        "mergeBase": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The commit HEAD and the upstream share. Null when there is no upstream or no common ancestor."
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "core.autocrlf",
+        "core.filemode",
+        "core.ignorecase",
+        "core.symlinks"
+      ],
+      "description": "Configuration that changes what Git considers modified. Part of the hash, because it is part of the state being read.",
+      "properties": {
+        "core.autocrlf": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "core.filemode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "core.ignorecase": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "core.symlinks": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submodules",
+        "hasGitmodules",
+        "insideLinkedWorktree",
+        "linkedWorktrees",
+        "mainWorktree"
+      ],
+      "description": "Layout facts that decide whether a single-tree snapshot can describe this repository. Submodules are still refused, and their absence is recorded so it is an affirmative finding rather than an assumption. Linked worktrees are NOT refused: each one is read, and the reading is carried here. What blocks is a worktree whose state could not be read at all, which never reaches a snapshot.",
+      "properties": {
+        "submodules": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 0
+        },
+        "hasGitmodules": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "insideLinkedWorktree": {
+          "type": "boolean",
+          "description": "Whether the audited directory is itself a linked worktree. True is supported; the main working tree is then read as well, because it is not registered under <common>/worktrees and would otherwise be the one tree left unread."
+        },
+        "mainWorktree": {
+          "$ref": "#/$defs/mainWorktree"
+        },
+        "linkedWorktrees": {
+          "type": "array",
+          "description": "Every registration under <common>/worktrees, resolved and read. An entry that is present carries its head, branch and cleanliness; an entry that is absent is a prunable registration, which is a complete observation rather than a gap.",
+          "items": {
+            "$ref": "#/$defs/worktree"
+          }
+        }
+      }
+    },
+    "worktree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clean",
+        "conflicted"
+      ],
+      "properties": {
+        "clean": {
+          "type": "boolean",
+          "description": "No staged, unstaged, untracked or unmerged entries."
+        },
+        "conflicted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "staged",
+        "unstaged",
+        "untracked",
+        "unmerged"
+      ],
+      "description": "Staged and unstaged are separate lists on purpose: porcelain v2 reports them as independent status letters, and collapsing them is what makes 'dirty' ambiguous.",
+      "properties": {
+        "staged": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          }
+        },
+        "unstaged": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          }
+        },
+        "untracked": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "unmerged": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          }
+        }
+      }
+    },
+    "diffstat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "staged",
+        "unstaged",
+        "candidate",
+        "candidateUnavailable"
+      ],
+      "properties": {
+        "staged": {
+          "$ref": "#/$defs/diffstat"
+        },
+        "unstaged": {
+          "$ref": "#/$defs/diffstat"
+        },
+        "candidate": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "base",
+            "baseOid",
+            "files",
+            "additions",
+            "deletions",
+            "binaryFiles"
+          ],
+          "description": "What would actually be published: own commits plus staged changes, measured from the merge base. Null when it cannot be measured, in which case candidateUnavailable says why.",
+          "properties": {
+            "base": {
+              "type": "string",
+              "enum": [
+                "merge-base"
+              ]
+            },
+            "baseOid": {
+              "type": "string",
+              "minLength": 1
+            },
+            "files": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "additions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "deletions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "binaryFiles": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "candidateUnavailable": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Why the publishable candidate could not be measured. Never null at the same time as a null candidate."
+        }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifests",
+        "lockfiles",
+        "ciWorkflows"
+      ],
+      "description": "Path facts only. Which commands a project runs is an interpretation and belongs to the policy layer.",
+      "properties": {
+        "manifests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lockfiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ciWorkflows": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracked"
+      ],
+      "properties": {
+        "tracked": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  },
+  "$defs": {
+    "mainWorktree": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "path",
+        "present",
+        "bare",
+        "head",
+        "branch",
+        "detached",
+        "clean",
+        "unreadable"
+      ],
+      "description": "The primary checkout, read only when the audited directory is a linked worktree, because then it is the one tree the registrations do not cover. Null otherwise: the audited directory IS the main worktree, and the snapshot already describes it. The shape repeats `worktree` rather than referencing it because this validator's $ref replaces a node whole and cannot be combined with a nullable type.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "present": {
+          "type": "boolean"
+        },
+        "bare": {
+          "type": "boolean",
+          "description": "True when the common git dir is a bare repository, which has no working tree to read and can hold nothing uncommitted."
+        },
+        "head": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detached": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "clean": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "unreadable": {
+          "type": "null"
+        }
+      }
+    },
+    "worktree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "path",
+        "present",
+        "head",
+        "branch",
+        "detached",
+        "clean",
+        "unreadable"
+      ],
+      "description": "One working tree of this repository, read rather than counted. `unreadable` is always null in a snapshot: a worktree whose state could not be read makes the layout unsupported, so no snapshot is produced at all. The field is kept so the record has the same shape wherever it is used.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The registration directory name, or `(main)` for the primary checkout."
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Absolute path of the working tree. Null only for a bare repository, which has none."
+        },
+        "present": {
+          "type": "boolean",
+          "description": "False for a registration whose path no longer exists. That is a prunable registration, not a gap: it can hold no uncommitted work."
+        },
+        "head": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Resolved HEAD oid, or null when the tree is absent."
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Branch name, null when detached or absent."
+        },
+        "detached": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "clean": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the working tree carries no changes. Null when the tree is absent."
+        },
+        "unreadable": {
+          "type": "null"
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "status",
+        "from"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "modified",
+            "typechange",
+            "added",
+            "deleted",
+            "renamed",
+            "copied",
+            "unmerged"
+          ]
+        },
+        "from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Original path of a rename or copy, null otherwise."
+        }
+      }
+    },
+    "diffstat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "baseOid",
+        "files",
+        "additions",
+        "deletions",
+        "binaryFiles"
+      ],
+      "properties": {
+        "base": {
+          "type": "string",
+          "enum": [
+            "HEAD",
+            "index"
+          ]
+        },
+        "baseOid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Null for the index, and for an unborn HEAD where the base is the empty tree."
+        },
+        "files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "additions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deletions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "binaryFiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Counted separately. Binary files report no line counts, so folding them in as zero would present an incomplete total as complete."
+        }
+      }
+    }
+  }
+}

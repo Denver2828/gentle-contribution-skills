@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/publication.v1.json",
+  "title": "Publication attempt",
+  "description": "One attempt to act on an authorization. A separate artifact on purpose: an attempt, successful or not, never edits the evidence or the receipt it refers to.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "attemptVersion",
+    "attemptId",
+    "attemptNumber",
+    "receiptId",
+    "evidenceId",
+    "candidateId",
+    "outcome",
+    "reason",
+    "detail",
+    "publisher"
+  ],
+  "properties": {
+    "attemptVersion": {
+      "const": "1.0.0"
+    },
+    "attemptId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "attemptNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "receiptId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "candidateId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "published",
+        "refused",
+        "failed"
+      ],
+      "description": "refused: the gate would not act. failed: the publisher was reached and did not succeed. Neither changes the evidence."
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detail": {
+      "type": "object"
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "module"
+      ],
+      "properties": {
+        "module": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

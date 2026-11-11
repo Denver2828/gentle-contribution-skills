@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "auditor-result/v3",
+  "kind": "no-code-aporte-audit",
+  "auditResultId": "sha256:f21d1add6ca636fa126eeac5eb84d6629397dea5f8f5c6e61603adfcc49e4b05",
+  "subject_id": "sha256:1c63a7377525d4f04936927831a9df50c47c6b2318a682389ee3794e5f419bef",
+  "candidateKind": "no-code-aporte",
+  "taskContractDigest": "sha256:d6e4e157b35b088c6773cdeba18900be2cd0d31e0a1c20fc2eb4e2860397ee0b",
+  "completeness": {
+    "status": "complete",
+    "reason": "test fixture completed its bounded inspection"
+  },
+  "acceptanceCoverage": [
+    {
+      "acceptanceId": "acceptance-1",
+      "status": "PASS",
+      "evidence": "fixture evidence for acceptance-1",
+      "reason": null,
+      "remediation": null
+    },
+    {
+      "acceptanceId": "acceptance-2",
+      "status": "PASS",
+      "evidence": "fixture evidence for acceptance-2",
+      "reason": null,
+      "remediation": null
+    }
+  ],
+  "acceptanceCoverageDigest": "sha256:fc8e789129aa8e977d8d4a63cec0ae4f91756b8848f9ee04863055aaba71cec1",
+  "coverageRemediation": null,
+  "verification": [
+    "fixture inspection"
+  ],
+  "findings": [],
+  "strengths": [],
+  "recommendation": "follow the derived verdict",
+  "verdict": "PASS",
+  "correctionEligible": false,
+  "designCoverage": [
+    {
+      "aspect": "design.over-engineering",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.over-engineering",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "design.side-effects",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.side-effects",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "design.user-qol",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.user-qol",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "design.shrinkability",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.shrinkability",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "cost.system",
+      "status": "assessed",
+      "evidence": "fixture assessment of cost.system",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "cost.user",
+      "status": "assessed",
+      "evidence": "fixture assessment of cost.user",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "cost.product",
+      "status": "assessed",
+      "evidence": "fixture assessment of cost.product",
+      "justification": null,
+      "material": null
+    }
+  ],
+  "maintainerDecisions": []
+}

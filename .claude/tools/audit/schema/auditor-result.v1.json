@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "auditor-result.v1.json",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "auditResultId", "subject_id", "candidateKind", "completeness", "verification", "findings", "strengths", "recommendation", "verdict", "correctionEligible"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "auditor-result/v1" },
+    "kind": { "const": "no-code-aporte-audit" },
+    "auditResultId": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+    "subject_id": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "candidateKind": { "const": "no-code-aporte" },
+    "completeness": {
+      "type": "object", "required": ["status", "reason"], "additionalProperties": false,
+      "properties": { "status": { "enum": ["complete", "incomplete"] }, "reason": { "type": "string", "minLength": 1 } }
+    },
+    "verification": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["severity", "evidenceClass", "causalDisposition", "claim", "evidence", "why", "smallestCorrection"], "additionalProperties": false,
+        "properties": {
+          "severity": { "enum": ["BLOCKER", "MAJOR", "WARNING"] },
+          "evidenceClass": { "enum": ["deterministic", "inferential", "observed"] },
+          "causalDisposition": { "enum": ["introduced", "pre_existing", "external", "unknown"] },
+          "claim": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "string", "minLength": 1 },
+          "why": { "type": "string", "minLength": 1 },
+          "smallestCorrection": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "strengths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "recommendation": { "type": "string", "minLength": 1 },
+    "verdict": { "enum": [null, "PASS", "NEEDS_CHANGES", "NEEDS_MAINTAINER", "BLOCKED_INCOMPLETE"] },
+    "correctionEligible": { "type": ["boolean", "null"] }
+  }
+}

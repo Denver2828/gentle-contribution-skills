@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/authorization.v1.json",
+  "title": "Authorization receipt",
+  "description": "A content-addressed receipt binding one decision to one candidate. NOT a signature: it proves nothing about who issued it and resists no forgery. Anyone able to write the document can write a consistent one.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorizationVersion",
+    "receiptId",
+    "kind",
+    "notASignature",
+    "gate",
+    "evidenceId",
+    "candidateId",
+    "decisionId",
+    "snapshotHash",
+    "policyHash",
+    "toolVersion",
+    "artifacts"
+  ],
+  "properties": {
+    "authorizationVersion": {
+      "const": "1.0.0"
+    },
+    "receiptId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "kind": {
+      "const": "content-addressed-receipt"
+    },
+    "notASignature": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Carried in the document itself so a reader cannot mistake it for a cryptographic signature."
+    },
+    "gate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "candidateId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "decisionId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "snapshotHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "policyHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "toolVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

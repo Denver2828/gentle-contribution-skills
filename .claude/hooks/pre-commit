@@ -1,0 +1,5 @@
+#!/bin/sh
+# Workspace pre-commit verification gate. Delegates to pre-commit-check.mjs:
+# runs the audit suite when operative surface is staged, skips for docs-only
+# commits. Bypass with `git commit --no-verify`.
+exec node "$(dirname "$0")/pre-commit-check.mjs"

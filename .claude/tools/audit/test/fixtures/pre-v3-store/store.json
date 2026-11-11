@@ -1,0 +1,35 @@
+{
+  "storeVersion": "1.0.0",
+  "notASignature": "This store uses no cryptographic signature and establishes no issuer identity. Anyone able to write into this directory can write a consistent receipt. It provides continuity and auditability, not authority.",
+  "lineages": {
+    "pre-v3": {
+      "lineage": "pre-v3",
+      "subject_id": "sha256:1c63a7377525d4f04936927831a9df50c47c6b2318a682389ee3794e5f419bef",
+      "base_tree": "ab933c1c",
+      "candidate_tree": "4daf0098",
+      "candidateId": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "state": "AUTHORIZED",
+      "correction_budget": 1,
+      "corrections_used": 0,
+      "verdict": "PASS",
+      "frozen_at_generation": 1,
+      "decisionId": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "snapshotHash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "evidenceId": "sha256:d9ab0fc55d16e32e34a089984dfe2436f4efdf8d3b9ae68b319fb732abc3ad46",
+      "auditResultId": "sha256:49e1806492bbb61c0687b6e9587a5b5999e3fec900082b98e6505ca603221a32",
+      "auditResultSha256": "sha256:ec66fec8227bee6677cd0c93bcc09c035668813e3fbd9b01095116ab7204554f",
+      "receiptId": "sha256:2c1758bd16700b5079a5e16f76d3b388574236616e0f24ca9322f19a89514c07",
+      "ticketId": null,
+      "attempts": 0,
+      "intake_status": "PASS",
+      "intake_refusal": null,
+      "intake_digest": "sha256:6f2923907128d6586662e93106785166320d800ba9d7c38ecf3906cfc572910b",
+      "taskContractDigest": "sha256:d6e4e157b35b088c6773cdeba18900be2cd0d31e0a1c20fc2eb4e2860397ee0b",
+      "taskContractSha256": "sha256:55ad3fe4c404a24195144ba3d9ba9aa32807950c6c6774ddc3bbb32af1cf5d40",
+      "draftBodySha256": "sha256:6cf5d1b5a005d42133370523e69a78d616b0e6587922c623c05cae55fbe25c20",
+      "consumedAttempts": [],
+      "signatureAttached": false
+    }
+  },
+  "migratedFrom": []
+}

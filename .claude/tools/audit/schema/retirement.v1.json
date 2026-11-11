@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/retirement.v1.json",
+  "title": "Lineage retirement",
+  "description": "The durable record that one lineage was closed on purpose: from which state, why, and what it carried at the time. RETIRED is terminal; nothing is reachable from it. A record, not a credential: anyone able to write the file can write a consistent one.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "retirementVersion",
+    "retirementId",
+    "lineage",
+    "retiredAt",
+    "reason",
+    "supersededBy",
+    "priorState",
+    "receiptId",
+    "ticketId",
+    "attempts"
+  ],
+  "properties": {
+    "retirementVersion": {
+      "const": "1.0.0"
+    },
+    "retirementId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "lineage": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "retiredAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Read from a file, never from argv, and normalized like a publication body (BOM stripped, line endings folded to LF, trailing newlines dropped). Mandatory: a retirement without a reason is not a record."
+    },
+    "supersededBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "description": "The lineage that replaces this one, when one does; it must exist in the same store and differ from the retired lineage. Null when the lineage is simply closed."
+    },
+    "priorState": {
+      "type": "string",
+      "enum": [
+        "FROZEN",
+        "AUDITED_PASS",
+        "NEEDS_CHANGES",
+        "CORRECTION_RESERVED",
+        "REFROZEN",
+        "REAUDITED",
+        "AUTHORIZED",
+        "PUBLISHABLE",
+        "NEEDS_MAINTAINER",
+        "BLOCKED_INCOMPLETE"
+      ],
+      "description": "The state the lineage was in when it was retired. STALE and RETIRED are absent on purpose: neither is a state a retirement can start from."
+    },
+    "receiptId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "The receipt the lineage held at retirement, archived under authorizations/superseded/ and no longer spendable. Null when none was ever issued."
+    },
+    "ticketId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "The ticket the index named at retirement. A live one refuses the retirement, so this is either null or an already expired ticket swept at the same time."
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How many attempts the store had issued. The attempt records themselves are untouched."
+    }
+  }
+}

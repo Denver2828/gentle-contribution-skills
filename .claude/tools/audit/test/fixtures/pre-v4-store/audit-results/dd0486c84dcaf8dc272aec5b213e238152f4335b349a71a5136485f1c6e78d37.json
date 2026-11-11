@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "auditor-result/v3",
+  "kind": "no-code-aporte-audit",
+  "auditResultId": "sha256:dd0486c84dcaf8dc272aec5b213e238152f4335b349a71a5136485f1c6e78d37",
+  "subject_id": "sha256:7d3b20ae9d351e6b9b5dd7495d4a6b49b9e3fda1bc7840bf0c6f4f5099231931",
+  "candidateKind": "no-code-aporte",
+  "taskContractDigest": "sha256:d6e4e157b35b088c6773cdeba18900be2cd0d31e0a1c20fc2eb4e2860397ee0b",
+  "completeness": {
+    "status": "complete",
+    "reason": "test fixture completed its bounded inspection"
+  },
+  "acceptanceCoverage": [
+    {
+      "acceptanceId": "acceptance-1",
+      "status": "FAIL",
+      "evidence": "fixture evidence for acceptance-1",
+      "reason": "Public claim disproved by reproduction.",
+      "remediation": "Correct the public claim."
+    },
+    {
+      "acceptanceId": "acceptance-2",
+      "status": "PASS",
+      "evidence": "fixture evidence for acceptance-2",
+      "reason": null,
+      "remediation": null
+    }
+  ],
+  "acceptanceCoverageDigest": "sha256:84735c3debdd8d169cf38d37826b8de6f0dd162844a580db00cd4f2c637c7474",
+  "coverageRemediation": null,
+  "verification": [
+    "fixture inspection"
+  ],
+  "findings": [
+    {
+      "severity": "MAJOR",
+      "evidenceClass": "deterministic",
+      "causalDisposition": "introduced",
+      "claim": "candidate defect",
+      "evidence": "test evidence",
+      "why": "publication would be wrong",
+      "smallestCorrection": "correct the candidate"
+    }
+  ],
+  "strengths": [],
+  "recommendation": "follow the derived verdict",
+  "verdict": "NEEDS_CHANGES",
+  "correctionEligible": true,
+  "designCoverage": [
+    {
+      "aspect": "design.over-engineering",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.over-engineering",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "design.side-effects",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.side-effects",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "design.user-qol",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.user-qol",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "design.shrinkability",
+      "status": "assessed",
+      "evidence": "fixture assessment of design.shrinkability",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "cost.system",
+      "status": "assessed",
+      "evidence": "fixture assessment of cost.system",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "cost.user",
+      "status": "assessed",
+      "evidence": "fixture assessment of cost.user",
+      "justification": null,
+      "material": null
+    },
+    {
+      "aspect": "cost.product",
+      "status": "assessed",
+      "evidence": "fixture assessment of cost.product",
+      "justification": null,
+      "material": null
+    }
+  ],
+  "maintainerDecisions": []
+}

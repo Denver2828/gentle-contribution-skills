@@ -1,0 +1,38 @@
+{
+  "evidenceVersion": "1.0.0",
+  "evidenceId": "sha256:d9ab0fc55d16e32e34a089984dfe2436f4efdf8d3b9ae68b319fb732abc3ad46",
+  "gate": "preflight",
+  "gateStatus": "PASS",
+  "candidate": {
+    "status": "PASS",
+    "candidateId": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "reason": "identified"
+  },
+  "binding": {
+    "snapshotHash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "snapshotHashAfter": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "stable": true,
+    "policyHash": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "toolVersion": "0.1.0",
+    "decisionId": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "verifications": {
+    "passed": [
+      {
+        "id": "a.one",
+        "required": true,
+        "reason": "ok"
+      }
+    ],
+    "failed": [],
+    "inconclusive": [],
+    "skipped": []
+  },
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "unknown": 0,
+    "notRun": 0
+  },
+  "authorises": false
+}

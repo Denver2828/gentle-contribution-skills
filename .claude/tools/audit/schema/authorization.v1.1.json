@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gentle-aporte/audit/authorization.v1.1.json",
+  "title": "Authorization receipt (publication-bound)",
+  "description": "A content-addressed receipt binding one decision to one candidate AND to one exact publication: the operation, the target, and the hash of the exact bytes. The binding is part of the record before receiptId is computed, so one signature over receiptId expresses: I authorize publishing these exact bytes, via this operation, to this target. Still not a signature by itself: the detached signature is a separate artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorizationVersion",
+    "receiptId",
+    "kind",
+    "notASignature",
+    "gate",
+    "evidenceId",
+    "candidateId",
+    "decisionId",
+    "snapshotHash",
+    "policyHash",
+    "toolVersion",
+    "publication",
+    "artifacts"
+  ],
+  "properties": {
+    "authorizationVersion": {
+      "const": "1.1.0"
+    },
+    "receiptId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "kind": {
+      "const": "content-addressed-receipt"
+    },
+    "notASignature": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Carried in the document itself so a reader cannot mistake the receipt for a cryptographic signature. The signature, when one exists, is the separate signatures/<receiptId>.sig.json artifact."
+    },
+    "gate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "candidateId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "decisionId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "snapshotHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "policyHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "toolVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation",
+        "targetRepo",
+        "targetNumber",
+        "bodySha256",
+        "titleSha256"
+      ],
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": [
+            "issue-create",
+            "issue-comment"
+          ],
+          "description": "The two supported operations. pr-create is retired: its result cannot be fully bound under the current contract (the proposed commits and target branch would sit outside the signature)."
+        },
+        "targetRepo": {
+          "type": "string",
+          "pattern": "^[^/\\s]+/[^/\\s]+$"
+        },
+        "targetNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The issue or pull request being commented on. Null for the operations that create their target, whose number does not exist yet."
+        },
+        "bodySha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Digest of the normalized body: BOM stripped, line endings folded to LF, trailing newlines dropped."
+        },
+        "titleSha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Required (non-null) for issue-create, which publishes a title; null for issue-comment. The cross-field rule is enforced in code (lib/authorization.mjs), because this validator carries no conditionals."
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "description": "Lineages that must have published (a recorded attempt with outcome published and detail.bodyIdentical true) before this one may. Additive: a 1.1.0 receipt written before the field existed carries none and is read as []. Existence, openness, self-reference, duplicates and cycles are refused by the store at authorization; satisfaction is re-checked at gate-publish, reserve-attempt and by the publisher."
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  }
+}
